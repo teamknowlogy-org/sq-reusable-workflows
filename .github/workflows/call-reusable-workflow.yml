@@ -1,0 +1,48 @@
+name: "Call Build and Get Parameters"
+on: 
+  workflow_call:
+  push:
+    branches:
+      - 'main'
+env:
+  REPOSITORY_NAME: "${{ github.repository }}"
+  BASE_BRANCH_NAME: "${{ github.base_ref }}"
+  BRANCH_NAME: "${{ github.ref_name }}"
+  PROJECT_NAME: 'squint'
+  APP_BRANCH_NAME: 'develop'    
+  APPLICATION_NAME: 'squint-dashboard-tv'  
+  APPLICATION_TYPE: 'angular'
+jobs:
+  Build-App-Job:
+    runs-on: ubuntu-latest
+    steps:   
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.SQUINT_AWS_REGION }}
+
+      - name: Get Parameters from AWS SSM
+        uses: teamknowlogy-org/action-get-credentials@main
+        with:
+          PROJECT_NAME: "${{env.PROJECT_NAME}}"
+          APP_BRANCH_NAME: "${{env.APP_BRANCH_NAME}}"
+          APPLICATION_NAME: "${{env.APPLICATION_NAME}}"
+          
+      - name: Copy Env file
+        run: |
+          cp my-tools/.env .
+          ls -lrta
+        shell: bash
+
+         
+      - name: BuildApp
+        uses: teamknowlogy-org/action-build@main
+        with:
+          PROJECT_NAME: "${{env.PROJECT_NAME}}"
+          APP_BRANCH_NAME: "${{env.APP_BRANCH_NAME}}"
+          APPLICATION_NAME: "${{env.APPLICATION_NAME}}"
+          APPLICATION_TYPE: "${{env.APPLICATION_TYPE}}"
