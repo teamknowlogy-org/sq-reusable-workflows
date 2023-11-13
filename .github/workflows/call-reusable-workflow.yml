@@ -25,18 +25,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'us-east-1'
 
-      - name: Get Parameters from AWS SSM
-        uses: teamknowlogy-org/action-get-credentials@main
-        with:
-          PROJECT_NAME: "${{env.PROJECT_NAME}}"
-          APP_BRANCH_NAME: "${{env.APP_BRANCH_NAME}}"
-          APPLICATION_NAME: "${{env.APPLICATION_NAME}}"
+      # - name: Get Parameters from AWS SSM
+      #   uses: teamknowlogy-org/action-get-credentials@main
+      #   with:
+      #     PROJECT_NAME: "${{env.PROJECT_NAME}}"
+      #     APP_BRANCH_NAME: "${{env.APP_BRANCH_NAME}}"
+      #     APPLICATION_NAME: "${{env.APPLICATION_NAME}}"
           
-      - name: Copy Env file
-        run: |
-          cp my-tools/.env .
-          ls -lrta
-        shell: bash
+      # - name: Copy Env file
+      #   run: |
+      #     cp my-tools/.env .
+      #     ls -lrta
+      #   shell: bash
 
          
       - name: BuildApp
@@ -47,4 +47,4 @@ jobs:
           APPLICATION_NAME: "${{env.APPLICATION_NAME}}"
           APPLICATION_TYPE: "${{env.APPLICATION_TYPE}}"
           NODE_VERSION: "14.x"
-          LAMBDA_FUNCTION_NAME: "squint-fb-one-page-preprocessor-dev"
+          LAMBDA_FUNCTION_NAME: "${{env.APPLICATION_NAME}}-dev"
